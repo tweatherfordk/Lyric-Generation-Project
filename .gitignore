@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+api_key.ipynbg
+*.csv
+api_key.ipynb
+*.pb
+*.csv
+*.txt
+trained_model/
+trained_model_50_epochs/
+*.pkl
+*.zip
