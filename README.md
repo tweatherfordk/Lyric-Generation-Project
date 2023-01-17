@@ -1,16 +1,28 @@
 # Lyric Generation Project
 ## Overview
-Inpired by my curiosity as to whether I could create a model to approximate the way I write in journal entries, I decided to see if I could capture the spirit and poetic whimsy of some of my favorite band's lyrics. 
+Inpired by my curiosity as to whether I could create a model to approximate the way I write in journal entries, I decided to see if I could capture the spirit and poetic whimsy of some of my favorite band's lyrics. This LSTM model was trained on the complete discographies of 7 of my favorite artists:
+
+- The Cure
+- Jawbreaker
+- Sunny Day Real Estate
+- My Chemical Romance
+- Blink-182
+- Gerard Way
+- Lifetime
+
+It functions by probabilistically prediciting the next word after given a sample seed of text!
 
 ![image](https://user-images.githubusercontent.com/110851861/212820687-f6523072-2e39-465f-adb1-5f6090594fdf.png)
 
 ## Business Understanding
-Lyrics are often impressionistic in nature and their ability to convey emotion within the conetext of a song is often just as important as their narrative function. 
+Lyrics are often impressionistic in nature and their ability to convey emotion within the conetext of a song is often just as important as their narrative function. Coming up with what is effectively poetry, one must have a source of inspiration, a muse of sorts. This model serves this need by harnessing AI to generate creative prompots based on a seed text. It is best used as a spring board to expose the songwriter to new phrases and mental images with which to adapt, rearrange, and combine into their own lyrics. It very much serves as a prompt to get those creative juices flowing.
 
 ## Data Collection
 In order to scrape lyric data, I registered for a client access token for Genius’s API. Using the package “lyricsgenius”, which streamlines the process of pulling information from the Genius API with concise commands. By searching for each artist’s specific ID number, I collected all of the lyrics to each of their entire discographies, then created a corpus dataframe of 1254 different songs in string format.
 
 ## Data Preprocessing
+![image](https://user-images.githubusercontent.com/110851861/212827560-33663797-5496-49b3-8e99-2d1add0012e6.png)
+
 First, I used a function to clean the text by removing punctuation, lowercasing all characters, remove any trailing whitespace, and splitting by line. Next, I used Keras’s Tokenizer to assign a numerical value to each word in the corpus, and then converted each line into a sequence of it’s tokens. Then all of the words were One Hot Encoded to use in training the model as a way to measure the text prediction against the word orders in the actual lyrics. At the end of the preprocessing, the text lyrics from the corpus have been converted to numerical data in sequential format that are now ready to be fed into a model.
 
 ## GloVe Embeddings
@@ -18,14 +30,20 @@ Word embeddings are a way to model the relationship between words in a vector (o
 
 ## Modeling
 
-First, I initialized a sequential model, and added the pretrained GloVe embedding layer as the first layer. Next, a bidirectional LSTM model was added with 20 units in the layer. 
-Then, a dense layer was added with the softmax function as the activation function as it normalizes the network output for the different output classes across a probability distribution. In our case, it is which token should come next in the text generation model. 
+First, I initialized a sequential model, and added the pretrained GloVe embedding layer as the first layer. Next, a bidirectional LSTM model was added with 20 units in the layer. Then, a dense layer was added with the softmax function as the activation function. The softmax function is used for multiclass probelms and normalizes the network output for the different output classes across a probability distribution. In our case, it is which token should come next in the text generation model. The model was compiled using categorical crossentropy as the loss function as this one is best suited to One Hot Encoding (OHE) problems. The final model was trained over 50 epochs.
+
+![lyric_final_model_training_history](https://user-images.githubusercontent.com/110851861/212826616-936b74d4-38c2-4f1a-ab2e-fbda42283cbd.png)
+
 
 ## Sample Lyrics
 
+
 ### Seed 1
+
 Inspired by [this clip](https://www.youtube.com/watch?v=H7vk5keNbRc&ab_channel=ScantRegard) from 1984 Hair Metal drama Spinal Tap, our seed text was as follows:  “I want you to lick my pump baby". Limiting it to 100 words, the algorithm produced:
 > i want you to lick my pump baby and all the waves is gone to play to bring in me im stuck lie on myself run my heart sit the man that you wants to turn the takes in the virgins and makebelieve moon and over of metal gorgeously that trick that if no to cant at my on us in a glimmering through trees tonight razor better bare next kiss all me showed inside of a bong on the bathroom summers ahh hand some live wearing you aground not needs twenty gripping morning as this is nobody from live of medicine other ways i fought now im
+
+![image](https://user-images.githubusercontent.com/110851861/212822050-ee1b90f1-2dde-4138-b621-b3cc7c219b8d.png)
 
 Key phrases include:
 - “razor better bare next kiss all me showed inside of a bong on the bathroom summers”
@@ -36,6 +54,10 @@ While not grammatically correct because the model uses probability to determine 
 
 ### Seed 2
 Seed Text: “Tormented in the bagel shop” 
+
+![image](https://user-images.githubusercontent.com/110851861/212822001-b1974942-7cf0-4716-83e7-43b4d703bbf1.png)
+
+
 > Tormented in the bagel shop variety christened again on bended aiming mansion fleurs nurse both guitar shivering curaetion lyricsinstrumental intro and video that actually much to be to see you she told my fucking golf and kiss meyou might also seeing im against time for the way me by a dancer no he dont would stay to the of darkness exciting like my structure come into the the up and walk in the beating as i going by the things you and all the different ways i was sure though why you believe know there come and let you help it must be coming home
 
 Selected Snippets:
